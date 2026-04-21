@@ -6,7 +6,7 @@ import react from '@vitejs/plugin-react';
 // If you deploy to a user/organization site (root), use '/'.
 export default defineConfig({
   plugins: [react()],
-  base: process.env.VITE_BASE || '/cryptolab/',
+  base: process.env.VITE_BASE || '/CryptoLab/',
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
