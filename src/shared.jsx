@@ -1,4 +1,5 @@
 // Shared primitives + helpers for CryptoLab
+import React from 'react';
 const { useState, useEffect, useRef, useMemo, useCallback } = React;
 
 // ---------- Crypto helpers (conceptual, not production) ----------
@@ -208,6 +209,8 @@ const MonoBlock = ({ children, tone = 'neutral', className = '' }) => {
 };
 
 Object.assign(window, {
+  // React
+  React, useState, useEffect, useRef, useMemo, useCallback,
   // helpers
   caesarShift, vigenere, fakeAES, fakeAESDecrypt, randomKey, tinyHash,
   genToyRSA, modpow,

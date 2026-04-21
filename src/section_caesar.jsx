@@ -3,6 +3,8 @@ const CaesarSection = () => {
   const [text, setText] = useState("HELLO BOB");
   const [k, setK] = useState(3);
   const [showBrute, setShowBrute] = useState(false);
+  const [bits, setBits] = useState(56);
+  const [triesPerSec, setTriesPerSec] = useState(1e9);
 
   const cipher = useMemo(() => caesarShift(text, k), [text, k]);
   const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
@@ -11,6 +13,18 @@ const CaesarSection = () => {
     () => Array.from({ length: 26 }, (_, i) => ({ k: i, out: caesarShift(cipher, -i) })),
     [cipher]
   );
+
+  const keyCount = useMemo(() => 2 ** bits, [bits]);
+  const seconds = useMemo(() => keyCount / triesPerSec, [keyCount, triesPerSec]);
+  const years = seconds / (3600 * 24 * 365);
+
+  const fmt = (n) => {
+    if (!Number.isFinite(n) || n > 1e15) return n.toExponential(2);
+    if (n >= 1e9) return (n / 1e9).toFixed(2) + 'B';
+    if (n >= 1e6) return (n / 1e6).toFixed(2) + 'M';
+    if (n >= 1e3) return (n / 1e3).toFixed(2) + 'K';
+    return n.toFixed(0);
+  };
 
   return (
     <SectionShell
@@ -104,6 +118,60 @@ const CaesarSection = () => {
             ))}
           </div>
         )}
+      </Card>
+
+      <Card className="p-7">
+        <div className="grid md:grid-cols-2 gap-6">
+          <div className="rounded-xl border border-blue-200 bg-blue-50 p-4">
+            <div className="text-[10px] uppercase tracking-wider text-blue-700 mb-2">Kerckhoffs principle</div>
+            <div className="text-[13px] text-blue-900 leading-relaxed">
+              A cryptosystem must remain secure even if the attacker knows the algorithm.
+              Security should rely only on the secrecy of the key.
+            </div>
+            <div className="mt-3 text-[12px] text-blue-900/80">
+              So publishing the algorithm is fine; short or weak keys are the real problem.
+            </div>
+          </div>
+
+          <div className="rounded-xl border border-stone-200 bg-stone-50 p-4">
+            <div className="text-[10px] uppercase tracking-wider text-stone-600 mb-2">How key length explodes search space</div>
+
+            <div className="mb-3">
+              <div className="flex items-center justify-between mb-1">
+                <label className="text-[11px] text-stone-600">Key length (bits)</label>
+                <span className="font-mono text-[12px]">{bits}</span>
+              </div>
+              <input
+                type="range"
+                min="8"
+                max="128"
+                step="8"
+                value={bits}
+                onChange={(e) => setBits(parseInt(e.target.value, 10))}
+                className="w-full accent-stone-900"
+              />
+            </div>
+
+            <div className="mb-3">
+              <label className="text-[11px] text-stone-600 mb-1 block">Guesses per second</label>
+              <select
+                value={triesPerSec}
+                onChange={(e) => setTriesPerSec(Number(e.target.value))}
+                className="w-full p-2 rounded-md border border-stone-300 text-[12px] bg-white"
+              >
+                <option value={1e6}>1e6 guesses/s</option>
+                <option value={1e9}>1e9 guesses/s</option>
+                <option value={1e12}>1e12 guesses/s</option>
+              </select>
+            </div>
+
+            <div className="text-[12px] text-stone-700 space-y-1 font-mono">
+              <div>keys: 2^{bits} ~ {fmt(keyCount)}</div>
+              <div>time: {fmt(seconds)} seconds</div>
+              <div>time: {fmt(years)} years</div>
+            </div>
+          </div>
+        </div>
       </Card>
     </SectionShell>
   );
