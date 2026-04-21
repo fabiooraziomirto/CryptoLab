@@ -3,19 +3,19 @@
 // side-effects and then read them back. This mirrors the preview exactly.
 import './shared.jsx';
 import './section_intro.jsx';
-import './section_concepts.jsx';
 import './section_attacks.jsx';
+import './section_concepts.jsx';
 import './section_caesar.jsx';
-import './section_alberti.jsx';
 import './section_vigenere.jsx';
+import './section_alberti.jsx';
 import './section_enigma.jsx';
 import './section_aes.jsx';
 import './section_des.jsx';
 import './section_rsa.jsx';
-import './section_hybrid.jsx';
 import './section_signature.jsx';
-import './section_https.jsx';
+import './section_hybrid.jsx';
 import './section_pgp.jsx';
+import './section_https.jsx';
 
 // The original app.jsx calls ReactDOM.createRoot directly (because it runs
 // via Babel in the preview). For the Vite build we expose a component and
@@ -24,19 +24,19 @@ import React, { useState, useEffect } from 'react';
 
 const SECTIONS = [
   { id: 'intro',     label: 'Alice, Bob e Trudy',        group: 'Fondamenti', comp: 'IntroSection' },
-  { id: 'concepts',  label: 'Codifica, Hash e Cifratura',group: 'Fondamenti', comp: 'ConceptsSection' },
   { id: 'attacks',   label: 'Tipi di attacco',           group: 'Fondamenti', comp: 'AttacksSection' },
+  { id: 'concepts',  label: 'Codifica, Hash e Cifratura',group: 'Fondamenti', comp: 'ConceptsSection' },
   { id: 'caesar',    label: 'Cifrario di Cesare',        group: 'Classici',   comp: 'CaesarSection' },
-  { id: 'alberti',   label: 'Disco di Alberti',          group: 'Classici',   comp: 'AlbertiSection' },
   { id: 'vigenere',  label: 'Cifrario di Vigenere',      group: 'Classici',   comp: 'VigenereSection' },
+  { id: 'alberti',   label: 'Disco di Alberti',          group: 'Classici',   comp: 'AlbertiSection' },
   { id: 'enigma',    label: 'Macchina Enigma',           group: 'Classici',   comp: 'EnigmaSection' },
   { id: 'aes',       label: 'Crittografia simmetrica',   group: 'Moderni',    comp: 'AESSection' },
   { id: 'legacy',    label: 'DES e 3DES',                group: 'Moderni',    comp: 'LegacyBlockSection' },
   { id: 'rsa',       label: 'Crittografia asimmetrica',  group: 'Moderni',    comp: 'RSASection' },
-  { id: 'hybrid',    label: 'Crittografia ibrida',       group: 'Moderni',    comp: 'HybridSection' },
   { id: 'signature', label: 'Firma digitale',            group: 'Moderni',    comp: 'SignatureSection' },
-  { id: 'https',     label: 'HTTPS nel mondo reale',     group: 'Mondo reale', comp: 'HTTPSSection' },
+  { id: 'hybrid',    label: 'Crittografia ibrida',       group: 'Moderni',    comp: 'HybridSection' },
   { id: 'pgp',       label: 'Email sicura con PGP',      group: 'Mondo reale', comp: 'PGPSection' },
+  { id: 'https',     label: 'HTTPS nel mondo reale',     group: 'Mondo reale', comp: 'HTTPSSection' },
 ];
 
 const GROUP_COLORS = {
