@@ -1,0 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body { font-family: 'Inter', system-ui, sans-serif; background: #FAF8F5; }
+* { -webkit-font-smoothing: antialiased; }
+input, textarea { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+::selection { background: #fde68a; }
