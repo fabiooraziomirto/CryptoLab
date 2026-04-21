@@ -1,4 +1,4 @@
-// Section 3 — Vigenère Cipher
+// Sezione 03 — Cifrario di Vigenère
 const VigenereSection = () => {
   const [msg, setMsg] = useState("ATTACK AT DAWN");
   const [key, setKey] = useState("LEMON");

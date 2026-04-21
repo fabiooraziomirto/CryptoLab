@@ -1,4 +1,4 @@
-// Section 4 — Symmetric encryption with real browser AES-GCM
+// Sezione 04 — Crittografia simmetrica con AES-GCM reale (Web Crypto API)
 const mutatePayload = (payload) => {
   const [iv, cipher] = String(payload || '').split(':');
   if (!iv || !cipher) return payload;

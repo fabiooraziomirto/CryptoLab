@@ -1,4 +1,4 @@
-// Section — Enigma Machine (WWII)
+// Sezione — Macchina Enigma (Seconda Guerra Mondiale)
 const EnigmaSection = (() => {
 
   // ── Rotor definitions (historical Enigma I rotors) ──────────────────────────
@@ -241,7 +241,11 @@ const EnigmaSection = (() => {
                       <div className="text-[10px] text-stone-400 uppercase">Rot {ROTORS[r].name}</div>
                       <div className="w-12 h-12 rounded-xl bg-stone-900 text-amber-300 font-mono text-[22px] grid place-items-center font-bold select-none cursor-pointer"
                         onClick={() => setRotorPos(p => { const n=[...p]; n[r]=(n[r]+1)%26; return n; })}
-                        title="Clicca per avanzare"
+                        title={`Clicca per avanzare il rotore ${ROTORS[r].name}`}
+                        aria-label={`Rotore ${ROTORS[r].name}: posizione ${posLabel(rotorPos[r])}. Clicca per avanzare`}
+                        role="button"
+                        tabIndex={0}
+                        onKeyDown={(e) => e.key === 'Enter' || e.key === ' ' ? setRotorPos(p => { const n=[...p]; n[r]=(n[r]+1)%26; return n; }) : null}
                       >
                         {posLabel(rotorPos[r])}
                       </div>
@@ -350,6 +354,7 @@ const EnigmaSection = (() => {
                     <button
                       key={k}
                       onClick={() => pressKey(k)}
+                      aria-label={`Premi tasto Enigma ${k}`}
                       className="w-10 h-10 rounded-lg border-2 border-stone-300 bg-stone-50 text-stone-800 font-mono font-bold text-[15px] hover:bg-stone-200 hover:border-stone-400 active:bg-amber-200 transition-colors select-none"
                     >
                       {k}
@@ -394,7 +399,7 @@ const EnigmaSection = (() => {
                   <span className="w-8 h-8 rounded-lg bg-stone-900 text-amber-300 font-mono font-bold text-[14px] grid place-items-center">{A[rotorPos[r]]}</span>
                 </div>
               ))}
-              <button onClick={() => { setRotorPos([0,0,0]); setLastKey(null); setSignalPath([]); }} className="ml-2 text-[11px] text-stone-400 hover:text-stone-700 underline">reimposta</button>
+              <button onClick={() => { setRotorPos([0,0,0]); setLastKey(null); setSignalPath([]); }} className="ml-2 text-[11px] text-stone-400 hover:text-stone-700 underline" aria-label="Reimposta posizione di tutti i rotori a AAA">reimposta</button>
             </div>
           </Card>
         )}
@@ -425,7 +430,7 @@ const EnigmaSection = (() => {
             </div>
 
             <div>
-              <Button onClick={runBombe} disabled={bombeRunning} variant="primary">
+              <Button onClick={runBombe} disabled={bombeRunning} variant="primary" aria-label={bombeRunning ? 'Attacco Bombe in esecuzione, attendere' : 'Avvia simulazione attacco Bombe'}>
                 {bombeRunning ? '⚙️  Bombe in esecuzione…' : '▶  Avvia attacco Bombe'}
               </Button>
             </div>

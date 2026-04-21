@@ -1,4 +1,4 @@
-// Section 2 — Caesar Cipher
+// Sezione 02 — Cifrario di Cesare
 const CaesarSection = () => {
   const [text, setText] = useState("HELLO BOB");
   const [k, setK] = useState(3);
@@ -55,6 +55,7 @@ const CaesarSection = () => {
                 type="range" min="0" max="25" value={k}
                 onChange={(e) => setK(parseInt(e.target.value))}
                 className="w-full accent-stone-900"
+                aria-label={`Spostamento della chiave: ${k} posizioni`}
               />
             </div>
           </div>
@@ -98,7 +99,11 @@ const CaesarSection = () => {
               Trudy non conosce k. Ma le opzioni sono solo 26, quindi le prova tutte.
             </div>
           </div>
-          <Button variant={showBrute ? 'secondary' : 'danger'} onClick={() => setShowBrute(!showBrute)}>
+          <Button
+            variant={showBrute ? 'secondary' : 'danger'}
+            onClick={() => setShowBrute(!showBrute)}
+            aria-label={showBrute ? 'Nascondi i risultati del brute force' : 'Avvia attacco brute force su tutti i 25 turni possibili'}
+          >
             {showBrute ? 'Nascondi attacco' : 'Avvia brute force'}
           </Button>
         </div>
@@ -149,6 +154,7 @@ const CaesarSection = () => {
                 value={bits}
                 onChange={(e) => setBits(parseInt(e.target.value, 10))}
                 className="w-full accent-stone-900"
+                aria-label={`Lunghezza chiave: ${bits} bit`}
               />
             </div>
 

@@ -1,8 +1,8 @@
-// Shared primitives + helpers for CryptoLab
+// Primitive condivise e helper per CryptoLab
 import React from 'react';
 const { useState, useEffect, useRef, useMemo, useCallback } = React;
 
-// ---------- Crypto helpers (conceptual, not production) ----------
+// ---------- Helper crittografici (solo dimostrativi, non adatti alla produzione) ----------
 const caesarShift = (text, k) => {
   const shift = ((k % 26) + 26) % 26;
   return text.replace(/[a-zA-Z]/g, (c) => {
@@ -25,21 +25,23 @@ const vigenere = (text, key, encrypt = true) => {
   });
 };
 
-// Fake-but-convincing AES: xor with a pseudo-random stream derived from key,
-// then base64. Purely for visual effect.
+// ⚠️  SOLO DIMOSTRATIVO — NON È AES REALE
+// Cifra XOR con un flusso pseudo-casuale derivato dalla chiave, poi codifica in Base64.
+// Usato esclusivamente per l'effetto visivo nelle sezioni didattiche storiche.
+// Per crittografia reale usa encryptAesGcm() qui sotto, che sfrutta la Web Crypto API.
 const seedRand = (seed) => {
   let s = 0;
   for (const c of seed) s = (s * 131 + c.charCodeAt(0)) >>> 0;
   return () => { s = (s * 1664525 + 1013904223) >>> 0; return s & 0xff; };
 };
-const fakeAES = (text, key) => {
+const xorCipher = (text, key) => {
   const rnd = seedRand(key);
   const bytes = new TextEncoder().encode(text);
   const out = new Uint8Array(bytes.length);
   for (let i = 0; i < bytes.length; i++) out[i] = bytes[i] ^ rnd();
   return btoa(String.fromCharCode(...out));
 };
-const fakeAESDecrypt = (b64, key) => {
+const xorCipherDecrypt = (b64, key) => {
   try {
     const rnd = seedRand(key);
     const bytes = Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
@@ -48,6 +50,9 @@ const fakeAESDecrypt = (b64, key) => {
     return new TextDecoder().decode(out);
   } catch { return ''; }
 };
+// Alias deprecati mantenuti per retrocompatibilità con eventuali sezioni che li usino ancora
+const fakeAES = xorCipher;
+const fakeAESDecrypt = xorCipherDecrypt;
 
 const bytesToBase64 = (bytes) => {
   let binary = '';
@@ -107,6 +112,7 @@ const decryptAesGcm = async (payload, secret) => {
   return new TextDecoder().decode(plainBuffer);
 };
 
+// Genera una chiave casuale a scopo dimostrativo (NON usare per produzione)
 const randomKey = (len = 16) => {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   let s = '';
@@ -114,7 +120,7 @@ const randomKey = (len = 16) => {
   return s;
 };
 
-// Tiny hash → 8 hex chars, for visual integrity demos
+// Hash minimale (16 caratteri hex) — solo per demo di integrità visiva, NON crittograficamente sicuro
 const tinyHash = (s) => {
   let h1 = 0xdeadbeef, h2 = 0x41c6ce57;
   for (let i = 0; i < s.length; i++) {
@@ -128,7 +134,9 @@ const tinyHash = (s) => {
   return out.slice(0, 16);
 };
 
-// Simplified RSA-like: use two small primes, real modular math, but kept tiny.
+// RSA semplificato — matematica modulare reale, ma numeri primissimi di 2-3 cifre.
+// ⚠️  SOLO DIMOSTRATIVO: questi numeri possono essere fattorizzati in millisecondi.
+// Il vero RSA usa numeri primi di 2048+ bit.
 const gcd = (a, b) => (b === 0 ? a : gcd(b, a % b));
 const modpow = (base, exp, mod) => {
   let r = 1n; base = BigInt(base) % BigInt(mod); exp = BigInt(exp);
@@ -163,7 +171,7 @@ const genToyRSA = () => {
   return { p, q, n, e, d };
 };
 
-// ---------- UI primitives ----------
+// ---------- Primitive UI ----------
 const Card = ({ children, className = '', ...rest }) => (
   <div className={`bg-white border border-stone-200 rounded-2xl ${className}`} {...rest}>
     {children}
@@ -230,7 +238,7 @@ const SectionShell = ({ eyebrow, title, intro, children, summary }) => (
   </div>
 );
 
-// Little character avatars — geometric, not cartoon SVG
+// Avatars geometrici per Alice, Bob e Trudy
 const Avatar = ({ who }) => {
   const config = {
     alice: { bg: '#DCE9FF', ring: '#2563eb', label: 'A', name: 'Alice' },
@@ -250,7 +258,7 @@ const Avatar = ({ who }) => {
   );
 };
 
-// Shared monospace output chip
+// Blocco monospaziato condiviso per output
 const MonoBlock = ({ children, tone = 'neutral', className = '' }) => {
   const tones = {
     neutral: 'bg-stone-50 border-stone-200 text-stone-900',
@@ -299,12 +307,16 @@ const Arrow = ({ label }) => (
 );
 
 Object.assign(window, {
-  // React
+  // React e hook
   React, useState, useEffect, useRef, useMemo, useCallback,
-  // helpers
-  caesarShift, vigenere, fakeAES, fakeAESDecrypt, randomKey, tinyHash,
-  bytesToBase64, base64ToBytes, bytesToHex, supportsWebCrypto, encryptAesGcm, decryptAesGcm,
+  // Helper crittografici
+  caesarShift, vigenere,
+  xorCipher, xorCipherDecrypt,
+  fakeAES, fakeAESDecrypt, // alias deprecati mantenuti per retrocompatibilità
+  randomKey, tinyHash,
+  bytesToBase64, base64ToBytes, bytesToHex,
+  supportsWebCrypto, encryptAesGcm, decryptAesGcm,
   genToyRSA, modpow,
-  // UI
+  // Componenti UI condivisi
   Card, Pill, Button, SectionShell, Avatar, MonoBlock, Pane, Arrow,
 });

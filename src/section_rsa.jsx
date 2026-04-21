@@ -1,9 +1,10 @@
-// Section 5 — Asymmetric (RSA Simplified)
+// Sezione 05 — Crittografia asimmetrica (RSA semplificato — solo dimostrativo)
 const RSASection = () => {
   const [keys, setKeys] = useState(() => genToyRSA());
   const [msg, setMsg] = useState("HI BOB");
 
-  // Encrypt each char code with public key (e,n); decrypt with (d,n)
+  // Cifra ogni char code con la chiave pubblica (e, n); decifra con (d, n)
+  // ⚠️  SOLO DIMOSTRATIVO: i numeri primi usati sono minuscoli e fattorizzabili istantaneamente.
   const encrypted = useMemo(() => {
     return [...msg].map((ch) => modpow(ch.charCodeAt(0), keys.e, keys.n));
   }, [msg, keys]);
@@ -82,9 +83,19 @@ const RSASection = () => {
           </div>
         </div>
 
-        <div className="mt-5 p-4 rounded-xl bg-stone-50 border border-stone-200 text-[12.5px] text-stone-700">
-          <span className="font-semibold">Dietro le quinte:</span> il vero RSA usa numeri primi lunghi centinaia di cifre.
-          Qui stiamo usando primi minuscoli ({keys.p} × {keys.q} = {keys.n}) per farti vedere come si muovono i numeri.
+        <div className="mt-5 rounded-xl border-2 border-amber-300 bg-amber-50 p-4">
+          <div className="flex items-start gap-3">
+            <span className="text-[22px] flex-shrink-0">⚠️</span>
+            <div>
+              <div className="text-[13px] font-semibold text-amber-900 mb-1">Solo a scopo dimostrativo — non usare in produzione</div>
+              <div className="text-[12.5px] text-amber-800 leading-relaxed">
+                Questa demo usa numeri primi minuscoli ({keys.p} × {keys.q} = {keys.n}), che possono essere fattorizzati
+                in millisecondi. Il vero RSA usa numeri primi di almeno <strong>2048 bit</strong> (centinaia di cifre),
+                rendendo la fattorizzazione computazionalmente impraticabile con la tecnologia attuale.
+                Per dati reali usa sempre librerie crittografiche certificate (es. TLS, Web Crypto API).
+              </div>
+            </div>
+          </div>
         </div>
       </Card>
     </SectionShell>
