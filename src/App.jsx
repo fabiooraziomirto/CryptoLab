@@ -3,6 +3,7 @@
 // side-effects and then read them back. This mirrors the preview exactly.
 import './shared.jsx';
 import './section_intro.jsx';
+import './section_concepts.jsx';
 import './section_attacks.jsx';
 import './section_caesar.jsx';
 import './section_alberti.jsx';
@@ -23,6 +24,7 @@ import React, { useState, useEffect } from 'react';
 
 const SECTIONS = [
   { id: 'intro',     label: 'Alice, Bob e Trudy',        group: 'Fondamenti', comp: 'IntroSection' },
+  { id: 'concepts',  label: 'Codifica, Hash e Cifratura',group: 'Fondamenti', comp: 'ConceptsSection' },
   { id: 'attacks',   label: 'Tipi di attacco',           group: 'Fondamenti', comp: 'AttacksSection' },
   { id: 'caesar',    label: 'Cifrario di Cesare',        group: 'Classici',   comp: 'CaesarSection' },
   { id: 'alberti',   label: 'Disco di Alberti',          group: 'Classici',   comp: 'AlbertiSection' },
@@ -44,16 +46,14 @@ const GROUP_COLORS = {
   'Mondo reale': 'bg-stone-100 text-stone-700 border-stone-200',
 };
 
-function Dashboard({ onOpenSection, viewed }) {
+function Dashboard({ onOpenSection }) {
   const byGroup = SECTIONS.reduce((acc, s) => {
     if (!acc[s.group]) acc[s.group] = [];
     acc[s.group].push(s);
     return acc;
   }, {});
 
-  const done = viewed.length;
   const total = SECTIONS.length;
-  const pct = Math.round((done / total) * 100);
 
   return (
     <div className="max-w-[1150px] mx-auto px-8 py-10">
@@ -63,28 +63,14 @@ function Dashboard({ onOpenSection, viewed }) {
           Percorso interattivo nella sicurezza
         </h1>
         <p className="text-[14px] text-stone-200 max-w-[760px] leading-relaxed">
-          Inizia da Foundations e avanza fino ai casi reali. Ogni sezione e interattiva e costruita
+          Inizia dai fondamenti e avanza fino ai casi reali. Ogni sezione è interattiva e costruita
           per consolidare i concetti della lezione in modo visuale.
         </p>
 
-        <div className="mt-6 grid sm:grid-cols-3 gap-3">
-          <div className="rounded-xl bg-white/10 border border-white/20 p-4">
-            <div className="text-[11px] uppercase tracking-wider text-stone-300 mb-1">Sezioni</div>
+        <div className="mt-6 flex gap-3">
+          <div className="rounded-xl bg-white/10 border border-white/20 p-4 min-w-[120px]">
+            <div className="text-[11px] uppercase tracking-wider text-stone-300 mb-1">Sezioni totali</div>
             <div className="text-[24px] font-semibold">{total}</div>
-          </div>
-          <div className="rounded-xl bg-white/10 border border-white/20 p-4">
-            <div className="text-[11px] uppercase tracking-wider text-stone-300 mb-1">Completate</div>
-            <div className="text-[24px] font-semibold">{done}</div>
-          </div>
-          <div className="rounded-xl bg-white/10 border border-white/20 p-4">
-            <div className="text-[11px] uppercase tracking-wider text-stone-300 mb-1">Progresso</div>
-            <div className="text-[24px] font-semibold">{pct}%</div>
-          </div>
-        </div>
-
-        <div className="mt-5">
-          <div className="h-2 rounded-full bg-white/20 overflow-hidden">
-            <div className="h-full bg-amber-300" style={{ width: `${pct}%` }} />
           </div>
         </div>
       </div>
@@ -101,21 +87,11 @@ function Dashboard({ onOpenSection, viewed }) {
 
             <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-3">
               {items.map((s, idx) => {
-                const doneItem = viewed.includes(s.id);
                 return (
                   <div key={s.id} className="rounded-2xl border border-stone-200 bg-white p-4">
                     <div className="flex items-center justify-between gap-2 mb-2">
                       <span className="text-[10px] uppercase tracking-wider text-stone-500">
                         {String(idx + 1).padStart(2, '0')}
-                      </span>
-                      <span
-                        className={`text-[10px] px-2 py-0.5 rounded-full border ${
-                          doneItem
-                            ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                            : 'bg-stone-100 text-stone-600 border-stone-200'
-                        }`}
-                      >
-                        {doneItem ? 'completata' : 'non iniziata'}
                       </span>
                     </div>
 
@@ -140,32 +116,13 @@ function Dashboard({ onOpenSection, viewed }) {
 
 export default function App() {
   const [active, setActive] = useState(() => localStorage.getItem('cryptolab.section') || 'dashboard');
-  const [viewed, setViewed] = useState(() => {
-    try {
-      const raw = localStorage.getItem('cryptolab.viewed');
-      const parsed = raw ? JSON.parse(raw) : [];
-      return Array.isArray(parsed) ? parsed : [];
-    } catch {
-      return [];
-    }
-  });
 
   useEffect(() => {
     localStorage.setItem('cryptolab.section', active);
   }, [active]);
 
-  useEffect(() => {
-    if (active === 'dashboard') return;
-    setViewed((prev) => {
-      if (prev.includes(active)) return prev;
-      const next = [...prev, active];
-      localStorage.setItem('cryptolab.viewed', JSON.stringify(next));
-      return next;
-    });
-  }, [active]);
-
   if (active === 'dashboard') {
-    return <Dashboard onOpenSection={setActive} viewed={viewed} />;
+    return <Dashboard onOpenSection={setActive} />;
   }
 
   const selected = SECTIONS.find((s) => s.id === active) || SECTIONS[0];
@@ -181,7 +138,6 @@ export default function App() {
             Panoramica
           </button>
           <div className="text-[11px] uppercase tracking-wider text-stone-500 truncate">{selected.group} - {selected.label}</div>
-          <div className="text-[12px] text-stone-600">{viewed.length}/{SECTIONS.length} completate</div>
         </div>
       </div>
       <Active />
