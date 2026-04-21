@@ -1,6 +1,6 @@
 // Section 11 - PGP secure email
 const PGPSection = () => {
-  const [msg, setMsg] = useState("Patient data attached. Please keep confidential.");
+  const [msg, setMsg] = useState("Dati del paziente in allegato. Mantienili riservati.");
   const [sessionKey, setSessionKey] = useState(() => randomKey(8));
   const [bobKeys, setBobKeys] = useState(() => genToyRSA());
   const [aliceKeys, setAliceKeys] = useState(() => genToyRSA());
@@ -31,59 +31,59 @@ const PGPSection = () => {
 
   return (
     <SectionShell
-      eyebrow="11 - Real world"
-      title="PGP email: confidentiality + integrity + sender authenticity"
-      intro="PGP combines ideas you already learned: hash + signature + hybrid encryption. One workflow gives all three properties needed for secure email."
+      eyebrow="11 - Mondo reale"
+      title="Email PGP: confidenzialita + integrita + autenticita del mittente"
+      intro="PGP combina idee che hai gia visto: hash + firma + cifratura ibrida. Un solo flusso offre tutte e tre le proprieta necessarie per una email sicura."
       summary={[
-        "Confidentiality: message encrypted with a random symmetric session key.",
-        "Key delivery: session key encrypted with Bob's public key.",
-        "Authenticity and integrity: Alice signs the message hash with her private key.",
+        "Confidenzialita: il messaggio e cifrato con una chiave di sessione simmetrica casuale.",
+        "Consegna della chiave: la chiave di sessione e cifrata con la chiave pubblica di Bob.",
+        "Autenticita e integrita: Alice firma l'hash del messaggio con la sua chiave privata.",
       ]}
     >
       <Card className="p-7">
         <div className="flex items-center gap-2 flex-wrap mb-4">
-          <Button variant="secondary" size="sm" onClick={() => setSessionKey(randomKey(8))}>New session key</Button>
-          <Button variant="secondary" size="sm" onClick={() => setBobKeys(genToyRSA())}>New Bob keys</Button>
-          <Button variant="secondary" size="sm" onClick={() => setAliceKeys(genToyRSA())}>New Alice keys</Button>
+          <Button variant="secondary" size="sm" onClick={() => setSessionKey(randomKey(8))}>Nuova chiave di sessione</Button>
+          <Button variant="secondary" size="sm" onClick={() => setBobKeys(genToyRSA())}>Nuove chiavi di Bob</Button>
+          <Button variant="secondary" size="sm" onClick={() => setAliceKeys(genToyRSA())}>Nuove chiavi di Alice</Button>
         </div>
 
         <div className="grid md:grid-cols-2 gap-4">
           <div className="rounded-xl border border-stone-200 p-4">
-            <div className="text-[11px] uppercase tracking-wider text-stone-500 mb-2">Alice prepares message</div>
+            <div className="text-[11px] uppercase tracking-wider text-stone-500 mb-2">Alice prepara il messaggio</div>
             <textarea
               value={msg}
               onChange={(e) => setMsg(e.target.value)}
               className="w-full h-[84px] p-2 rounded-md border border-stone-300 text-[13px] resize-none focus:outline-none focus:border-stone-900"
             />
             <div className="mt-2 text-[12px] text-stone-600">Hash: <span className="font-mono">{digest}</span></div>
-            <div className="mt-1 text-[12px] text-stone-600">Signed hash (Alice private key):</div>
+            <div className="mt-1 text-[12px] text-stone-600">Hash firmato (chiave privata di Alice):</div>
             <MonoBlock tone="blue" className="mt-1 h-[56px] overflow-auto">{signature.join(' . ')}</MonoBlock>
           </div>
 
           <div className="rounded-xl border border-stone-200 p-4">
-            <div className="text-[11px] uppercase tracking-wider text-stone-500 mb-2">Encrypted package sent to Bob</div>
-            <div className="text-[12px] text-stone-600">Ciphertext</div>
+            <div className="text-[11px] uppercase tracking-wider text-stone-500 mb-2">Pacchetto cifrato inviato a Bob</div>
+            <div className="text-[12px] text-stone-600">Testo cifrato</div>
             <MonoBlock tone="ink" className="mt-1 h-[52px] overflow-auto">{encryptedMsg}</MonoBlock>
-            <div className="mt-2 text-[12px] text-stone-600">Session key encrypted with Bob public key</div>
+            <div className="mt-2 text-[12px] text-stone-600">Chiave di sessione cifrata con la chiave pubblica di Bob</div>
             <MonoBlock tone="coral" className="mt-1 h-[52px] overflow-auto">{wrappedSession.join(' . ')}</MonoBlock>
           </div>
         </div>
 
         <div className="mt-4 rounded-xl border border-stone-200 p-4">
-          <div className="text-[11px] uppercase tracking-wider text-stone-500 mb-2">Bob verifies</div>
+          <div className="text-[11px] uppercase tracking-wider text-stone-500 mb-2">Bob verifica</div>
           <div className="grid md:grid-cols-3 gap-3 text-[12px]">
             <div className="rounded-lg bg-stone-50 border border-stone-200 p-3">
-              <div className="text-stone-500 mb-1">Recovered session key</div>
+              <div className="text-stone-500 mb-1">Chiave di sessione recuperata</div>
               <div className="font-mono">{recoveredSession}</div>
             </div>
             <div className="rounded-lg bg-stone-50 border border-stone-200 p-3">
-              <div className="text-stone-500 mb-1">Recovered message hash</div>
+              <div className="text-stone-500 mb-1">Hash del messaggio recuperato</div>
               <div className="font-mono">{recoveredDigest}</div>
             </div>
             <div className={`rounded-lg border p-3 ${signatureValid ? 'bg-emerald-50 border-emerald-200' : 'bg-rose-50 border-rose-200'}`}>
-              <div className="text-stone-500 mb-1">Signature check</div>
+              <div className="text-stone-500 mb-1">Verifica firma</div>
               <div className={`font-semibold ${signatureValid ? 'text-emerald-700' : 'text-rose-700'}`}>
-                {signatureValid ? 'VALID' : 'INVALID'}
+                {signatureValid ? 'VALIDA' : 'NON VALIDA'}
               </div>
             </div>
           </div>

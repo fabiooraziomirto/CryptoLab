@@ -1,52 +1,53 @@
-# CryptoLab — Interactive Cybersecurity & Cryptography Lab
+# CryptoLab — Laboratorio interattivo di cybersicurezza e crittografia
 
-An interactive, beginner-friendly web app that teaches fundamental concepts of cybersecurity and cryptography (confidentiality, integrity, authentication, encryption, attacks) to non-technical students (e.g. Medicine).
+Una web app interattiva, pensata per principianti, che insegna i concetti fondamentali di cybersicurezza e crittografia (confidenzialita, integrita, autenticazione, cifratura, attacchi) a studenti non tecnici, per esempio di Medicina.
 
-Seven hands-on sections:
+Le sezioni pratiche includono:
 
-1. Alice, Bob & Trudy — why cryptography exists
-2. Caesar cipher (with live brute-force attack)
-3. Vigenère cipher (keyword-based)
-4. Symmetric encryption (AES-style)
-5. Asymmetric encryption (RSA, simplified)
-6. Digital signatures (hashing + signing + tamper detection)
-7. HTTPS in the wild (browser padlock, certificates, CAs)
+1. Alice, Bob e Trudy — perche esiste la crittografia
+2. Cifrario di Cesare (con attacco brute-force live)
+3. Cifrario di Vigenere (basato su parola chiave)
+4. Crittografia simmetrica con AES-GCM del browser
+5. Confronto tra DES e 3DES
+6. Crittografia asimmetrica (RSA semplificato)
+7. Firme digitali (hash + firma + rilevazione manomissioni)
+8. HTTPS nel mondo reale (lucchetto del browser, certificati, CA)
 
-Everything runs 100% client-side — no backend.
+Tutto gira al 100% lato client, senza backend.
 
 ---
 
-## Previewing in this project
+## Anteprima del progetto
 
-Open `CryptoLab.html` — the single-file React/Babel version used for previewing in the design tool.
+Apri `CryptoLab.html`: e la versione React/Babel in un solo file usata per l'anteprima nel tool di design.
 
-## Running the Vite app locally
+## Avvio locale della app Vite
 
 ```bash
 npm install
 npm run dev
 ```
 
-Then open the URL printed in the terminal.
+Poi apri l'URL mostrato nel terminale.
 
-## Deploying to GitHub Pages
+## Deploy su GitHub Pages
 
-1. Create a GitHub repo (e.g. `cryptolab`) and push this folder to it.
-2. Open `vite.config.js` and update the `base` field to match the repo name:
+1. Crea un repository GitHub (per esempio `cryptolab`) e pubblica questa cartella.
+2. Apri `vite.config.js` e aggiorna il campo `base` in modo che corrisponda al nome del repository:
    ```js
    base: '/<your-repo-name>/'
    ```
-   (or set `VITE_BASE=/<your-repo-name>/` as an env variable)
-   - For a user/organization site served at the root, set it to `'/'`.
-3. Build and deploy:
+   (oppure imposta `VITE_BASE=/<your-repo-name>/` come variabile d'ambiente)
+   - Per un sito utente/organizzazione servito alla root, impostalo a `'/'`.
+3. Esegui build e deploy:
    ```bash
    npm run deploy
    ```
-   This runs `vite build` then publishes the `dist/` folder to the `gh-pages` branch via the `gh-pages` npm package.
-4. In the repo settings → Pages, select **Deploy from branch → `gh-pages` / root**.
-5. Your site will be live at `https://<user>.github.io/<repo-name>/`.
+   Questo comando esegue `vite build` e poi pubblica la cartella `dist/` nel branch `gh-pages` usando il pacchetto npm `gh-pages`.
+4. Nelle impostazioni del repository → Pages, seleziona **Deploy from branch → `gh-pages` / root**.
+5. Il sito sara online su `https://<user>.github.io/<repo-name>/`.
 
-### Notes
+### Note
 
-- The app is fully static — no server-side features, no routing library. Sections are conditionally rendered based on React state (persisted in `localStorage`).
-- All assets (fonts, React, Tailwind) are loaded from CDNs in the preview HTML; when built with Vite they are bundled under `assets/` with hashed filenames.
+- La app e completamente statica: nessuna funzionalita server-side e nessuna libreria di routing. Le sezioni vengono renderizzate in modo condizionale in base allo stato React, salvato in `localStorage`.
+- Tutti gli asset (font, React, Tailwind) vengono caricati da CDN nella preview HTML; nella build Vite vengono invece bundlati nella cartella `assets/` con nomi hashati.

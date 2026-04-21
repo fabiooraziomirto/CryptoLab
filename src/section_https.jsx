@@ -8,22 +8,22 @@ const HTTPSSection = () => {
 
   return (
     <SectionShell
-      eyebrow="07 · HTTPS in real life"
-      title="The little padlock in your browser"
-      intro="HTTPS wraps every request in a secure tunnel. Before any data flows, your browser verifies a certificate signed by a trusted authority — proving the site really is who it claims to be."
+      eyebrow="07 · HTTPS nella vita reale"
+      title="Il piccolo lucchetto nel browser"
+      intro="HTTPS incapsula ogni richiesta in un tunnel sicuro. Prima che i dati inizino a scorrere, il browser verifica un certificato firmato da un'autorita fidata, dimostrando che il sito e davvero chi dice di essere."
       summary={[
-        "HTTP sends data in the clear — anyone on the network can read it.",
-        "HTTPS encrypts the connection, so only the server can read it.",
-        "Certificates + trusted authorities prevent Trudy from impersonating the site.",
+        "HTTP invia i dati in chiaro: chiunque sulla rete puo leggerli.",
+        "HTTPS cifra la connessione, quindi solo il server puo leggere i dati.",
+        "Certificati e autorita fidate impediscono a Trudy di impersonare il sito.",
       ]}
     >
       <Card className="p-7">
         <div className="flex items-center gap-3 mb-5 flex-wrap">
-          <Toggle label="Use HTTPS" value={secure} onChange={setSecure} />
-          <Toggle label="Certificate valid" value={certValid} onChange={setCertValid} />
+          <Toggle label="Usa HTTPS" value={secure} onChange={setSecure} />
+          <Toggle label="Certificato valido" value={certValid} onChange={setCertValid} />
           <div className="ml-auto">
             <Pill tone={secure && certValid ? 'green' : secure ? 'amber' : 'coral'}>
-              {secure && certValid ? 'Trusted & encrypted' : secure ? 'Encrypted but untrusted' : 'Plain HTTP'}
+              {secure && certValid ? 'Fidato e cifrato' : secure ? 'Cifrato ma non fidato' : 'HTTP in chiaro'}
             </Pill>
           </div>
         </div>
@@ -50,23 +50,23 @@ const HTTPSSection = () => {
                 {secure ? 'https://' : 'http://'}
                 <span className="font-semibold">hospital-portal.edu</span>/login
               </span>
-              {secure && certValid && <span className="ml-auto text-emerald-700 text-[10px]">Secure</span>}
-              {secure && !certValid && <span className="ml-auto text-amber-800 text-[10px]">Not private</span>}
-              {!secure && <span className="ml-auto text-rose-700 text-[10px]">Not secure</span>}
+              {secure && certValid && <span className="ml-auto text-emerald-700 text-[10px]">Sicuro</span>}
+              {secure && !certValid && <span className="ml-auto text-amber-800 text-[10px]">Non privata</span>}
+              {!secure && <span className="ml-auto text-rose-700 text-[10px]">Non sicura</span>}
             </div>
           </div>
           <div className="grid md:grid-cols-[1fr_auto_1fr]">
             <div className="p-5 border-r border-stone-200">
-              <div className="text-[11px] uppercase tracking-wider text-stone-500 mb-2">You send</div>
+              <div className="text-[11px] uppercase tracking-wider text-stone-500 mb-2">Tu invii</div>
               <div className="font-mono text-[12.5px] p-3 rounded-lg bg-stone-50 border border-stone-200 break-all">
                 {req}
               </div>
             </div>
             <div className="flex items-center justify-center p-3">
-              <Arrow label={secure ? 'encrypted' : 'plain'} />
+              <Arrow label={secure ? 'cifrato' : 'chiaro'} />
             </div>
             <div className="p-5">
-              <div className="text-[11px] uppercase tracking-wider text-stone-500 mb-2">What Trudy sees</div>
+              <div className="text-[11px] uppercase tracking-wider text-stone-500 mb-2">Cosa vede Trudy</div>
               <div className={`font-mono text-[12.5px] p-3 rounded-lg break-all border ${
                 secure ? 'bg-stone-900 text-amber-200 border-stone-900' : 'bg-rose-50 text-rose-900 border-rose-200'
               }`}>
@@ -88,25 +88,25 @@ const HTTPSSection = () => {
                 {certValid ? '✓' : '✗'}
               </span>
               <div className="text-[12px] font-semibold">
-                {certValid ? 'Certificate' : 'Certificate error'}
+                {certValid ? 'Certificato' : 'Errore certificato'}
               </div>
             </div>
             <dl className="text-[11.5px] font-mono space-y-1 text-stone-800">
-              <div className="flex justify-between"><dt className="text-stone-500">Issued to</dt><dd>hospital-portal.edu</dd></div>
-              <div className="flex justify-between"><dt className="text-stone-500">Issued by</dt><dd>{certValid ? 'Let’s Encrypt' : '⚠ Unknown CA'}</dd></div>
-              <div className="flex justify-between"><dt className="text-stone-500">Valid until</dt><dd>2026-10-14</dd></div>
+              <div className="flex justify-between"><dt className="text-stone-500">Emesso per</dt><dd>hospital-portal.edu</dd></div>
+              <div className="flex justify-between"><dt className="text-stone-500">Emesso da</dt><dd>{certValid ? 'Let’s Encrypt' : '⚠ CA sconosciuta'}</dd></div>
+              <div className="flex justify-between"><dt className="text-stone-500">Valido fino al</dt><dd>2026-10-14</dd></div>
               <div className="flex justify-between"><dt className="text-stone-500">SHA-256</dt><dd>7a:4e:bd…</dd></div>
             </dl>
           </div>
           <div className="text-[13px] text-stone-700 leading-relaxed">
             <p className="mb-2">
-              <span className="font-semibold">Trusted authorities (CAs)</span> are organizations every browser already trusts.
-              They digitally sign certificates only after checking that the site owner really controls the domain.
+              Le <span className="font-semibold">autorita fidate (CA)</span> sono organizzazioni gia considerate affidabili dal browser.
+              Firmano digitalmente i certificati solo dopo aver verificato che il proprietario del sito controlli davvero il dominio.
             </p>
             <p>
               {certValid
-                ? 'Here the certificate is signed by a trusted CA — your browser shows the padlock and proceeds.'
-                : 'A certificate from an unknown issuer could mean Trudy is impersonating the site. Your browser refuses to connect silently.'}
+                ? 'Qui il certificato e firmato da una CA fidata: il browser mostra il lucchetto e procede.'
+                : 'Un certificato emesso da un soggetto sconosciuto puo significare che Trudy sta impersonando il sito. Il browser blocca la connessione.'}
             </p>
           </div>
         </div>

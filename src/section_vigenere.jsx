@@ -28,19 +28,19 @@ const VigenereSection = () => {
 
   return (
     <SectionShell
-      eyebrow="03 · Classical ciphers"
-      title="Vigenère cipher — the key is a word"
-      intro="Instead of shifting every letter by the same amount, the shift changes letter by letter, following a keyword. Try different keywords and watch the alignment."
+      eyebrow="03 · Cifrari classici"
+      title="Cifrario di Vigenere — la chiave e una parola"
+      intro="Invece di spostare tutte le lettere della stessa quantita, qui lo spostamento cambia lettera per lettera seguendo una parola chiave. Prova parole diverse e osserva l'allineamento."
       summary={[
-        "Using a keyword makes the cipher much harder to brute force than Caesar.",
-        "But the keyword repeats — that’s what eventually leaks the pattern.",
-        "Classical ciphers taught us that key length and randomness matter.",
+        "Usare una parola chiave rende il cifrario molto piu difficile da forzare rispetto a Cesare.",
+        "Ma la parola chiave si ripete: ed e proprio questo a far emergere il pattern.",
+        "I cifrari classici ci insegnano che lunghezza della chiave e casualita contano davvero.",
       ]}
     >
       <Card className="p-7">
         <div className="grid md:grid-cols-2 gap-5">
           <div>
-            <label className="text-[11px] uppercase tracking-wider text-stone-500 mb-1.5 block">Message</label>
+            <label className="text-[11px] uppercase tracking-wider text-stone-500 mb-1.5 block">Messaggio</label>
             <input
               value={msg}
               onChange={(e) => setMsg(e.target.value.toUpperCase())}
@@ -48,7 +48,7 @@ const VigenereSection = () => {
             />
           </div>
           <div>
-            <label className="text-[11px] uppercase tracking-wider text-stone-500 mb-1.5 block">Keyword</label>
+            <label className="text-[11px] uppercase tracking-wider text-stone-500 mb-1.5 block">Parola chiave</label>
             <input
               value={key}
               onChange={(e) => setKey(e.target.value.toUpperCase())}
@@ -61,16 +61,16 @@ const VigenereSection = () => {
         {/* Aligned grid */}
         <div className="mt-7 overflow-x-auto">
           <div className="inline-flex flex-col gap-1.5 min-w-full">
-            <Row label="Plain"  cells={rows.map((r) => r.p)} tone="stone" />
-            <Row label="Key"    cells={rows.map((r) => r.k)} tone="amber" emphasize />
-            <Row label="Cipher" cells={rows.map((r) => r.c)} tone="ink" />
+            <Row label="Chiaro"  cells={rows.map((r) => r.p)} tone="stone" />
+            <Row label="Chiave"  cells={rows.map((r) => r.k)} tone="amber" emphasize />
+            <Row label="Cifrato" cells={rows.map((r) => r.c)} tone="ink" />
           </div>
         </div>
 
         <div className="mt-5 p-4 rounded-xl bg-amber-50 border border-amber-200 text-[13px] text-amber-900">
-          <span className="font-semibold">Notice: </span>
-          the keyword <span className="font-mono">{cleanKey}</span> repeats over and over. If the message is long enough,
-          the pattern becomes visible — and crackable.
+          <span className="font-semibold">Nota: </span>
+          la parola chiave <span className="font-mono">{cleanKey}</span> si ripete continuamente. Se il messaggio e abbastanza lungo,
+          il pattern diventa visibile e quindi attaccabile.
         </div>
       </Card>
     </SectionShell>

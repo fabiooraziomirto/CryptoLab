@@ -2,7 +2,7 @@
 const SPEED_DURATION = { slow: 7, normal: 3.5, fast: 1.4 };
 
 const IntroSection = () => {
-  const [msg, setMsg] = useState("Meet me at the library at 7pm.");
+  const [msg, setMsg] = useState("Ci vediamo in biblioteca alle 19.");
   const [encrypted, setEncrypted] = useState(false);
   const [intercepting, setIntercepting] = useState(true);
   const [speed, setSpeed] = useState('normal');
@@ -35,13 +35,13 @@ const IntroSection = () => {
 
   return (
     <SectionShell
-      eyebrow="01 \u00B7 Introduction"
-      title="Alice wants to message Bob. Trudy is listening."
-      intro="Before cryptography, every message travels like a postcard \u2014 anyone on the path can read it. Toggle encryption on and watch what changes for Trudy."
+      eyebrow="01 \u00B7 Introduzione"
+      title="Alice vuole scrivere a Bob. Trudy sta ascoltando."
+      intro="Prima della crittografia, ogni messaggio viaggia come una cartolina: chiunque sia sul percorso può leggerlo. Attiva la cifratura e osserva cosa cambia per Trudy."
       summary={[
-        "Without encryption, a message is readable by anyone who intercepts it.",
-        "Encryption turns readable plaintext into scrambled ciphertext.",
-        "Even if Trudy captures encrypted traffic, she can't read the message without the key.",
+        "Senza cifratura, un messaggio è leggibile da chiunque lo intercetti.",
+        "La cifratura trasforma il testo in chiaro in un testo cifrato incomprensibile.",
+        "Anche se Trudy cattura traffico cifrato, non può leggerlo senza la chiave.",
       ]}
     >
       <Card className="p-7">
@@ -50,15 +50,15 @@ const IntroSection = () => {
           <div className="flex items-center gap-3">
             <Pill tone={encrypted ? 'green' : 'coral'}>
               <span className={`w-1.5 h-1.5 rounded-full ${encrypted ? 'bg-emerald-500' : 'bg-rose-500'}`} />
-              {encrypted ? 'Encrypted channel' : 'Plain channel'}
+              {encrypted ? 'Canale cifrato' : 'Canale in chiaro'}
             </Pill>
             <Pill tone={intercepting ? 'amber' : 'neutral'}>
-              Trudy: {intercepting ? 'intercepting' : 'idle'}
+              Trudy: {intercepting ? 'intercetta' : 'inattiva'}
             </Pill>
           </div>
           <div className="flex items-center gap-2 flex-wrap">
-            <Toggle label="Encryption" value={encrypted} onChange={setEncrypted} />
-            <Toggle label="Trudy listens" value={intercepting} onChange={setIntercepting} />
+            <Toggle label="Cifratura" value={encrypted} onChange={setEncrypted} />
+            <Toggle label="Trudy ascolta" value={intercepting} onChange={setIntercepting} />
           </div>
         </div>
 
@@ -72,7 +72,7 @@ const IntroSection = () => {
                 ? 'bg-emerald-600 text-white border-emerald-600 hover:bg-emerald-700'
                 : 'bg-white text-stone-700 border-stone-300 hover:border-stone-500'
             }`}
-            title={paused ? 'Resume' : 'Pause'}
+            title={paused ? 'Riprendi' : 'Pausa'}
           >
             {paused ? (
               <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
@@ -84,13 +84,13 @@ const IntroSection = () => {
                 <rect x="7" y="1" width="4" height="10" rx="1"/>
               </svg>
             )}
-            {paused ? 'Play' : 'Pause'}
+            {paused ? 'Riprendi' : 'Pausa'}
           </button>
 
           <div className="w-px h-5 bg-stone-300 hidden md:block" />
 
           <div className="flex items-center gap-2">
-            <span className="text-[11px] uppercase tracking-wider text-stone-500 shrink-0">Speed</span>
+            <span className="text-[11px] uppercase tracking-wider text-stone-500 shrink-0">Velocita</span>
             {['slow', 'normal', 'fast'].map((s) => (
               <button
                 key={s}
@@ -101,7 +101,7 @@ const IntroSection = () => {
                     : 'bg-white text-stone-700 border-stone-300 hover:border-stone-500'
                 }`}
               >
-                {s.charAt(0).toUpperCase() + s.slice(1)}
+                {{ slow: 'Lenta', normal: 'Normale', fast: 'Veloce' }[s]}
               </button>
             ))}
           </div>
@@ -109,7 +109,7 @@ const IntroSection = () => {
           <div className="w-px h-5 bg-stone-300 hidden md:block" />
 
           <div className="flex items-center gap-2">
-            <span className="text-[11px] uppercase tracking-wider text-stone-500 shrink-0">Packets in pipe</span>
+            <span className="text-[11px] uppercase tracking-wider text-stone-500 shrink-0">Pacchetti sul canale</span>
             {[1, 2, 3, 4].map((n) => (
               <button
                 key={n}
@@ -135,7 +135,7 @@ const IntroSection = () => {
           {intercepting && (
             <div className="absolute left-1/2 -translate-x-1/2 top-0 flex flex-col items-center">
               <Avatar who="trudy" />
-              <div className="mt-1 text-[10px] font-mono text-rose-600">\u2193 eavesdrop</div>
+              <div className="mt-1 text-[10px] font-mono text-rose-600">\u2193 intercetta</div>
             </div>
           )}
 
@@ -182,7 +182,7 @@ const IntroSection = () => {
 
         <div className="grid md:grid-cols-2 gap-3 mt-6">
           <div>
-            <label className="text-[11px] uppercase tracking-wider text-stone-500 mb-1.5 block">Alice types</label>
+            <label className="text-[11px] uppercase tracking-wider text-stone-500 mb-1.5 block">Alice scrive</label>
             <textarea
               value={msg}
               onChange={(e) => setMsg(e.target.value)}
@@ -191,7 +191,7 @@ const IntroSection = () => {
           </div>
           <div>
             <label className="text-[11px] uppercase tracking-wider text-stone-500 mb-1.5 block">
-              What Trudy sees {intercepting ? '' : "(she's not looking)"}
+              Cosa vede Trudy {intercepting ? '' : "(non sta guardando)"}
             </label>
             <MonoBlock tone={encrypted ? 'ink' : 'coral'} className="h-[88px] overflow-auto">
               {intercepting ? trudyView : <span className="text-stone-400">\u2014</span>}
@@ -200,9 +200,9 @@ const IntroSection = () => {
         </div>
 
         <div className="mt-5 grid md:grid-cols-3 gap-3 text-[13px]">
-          <Fact label="Confidentiality" text="Only Bob should read Alice's message." />
-          <Fact label="Integrity"       text="The message shouldn't change on the way." />
-          <Fact label="Authentication"  text="Bob should know it's really from Alice." />
+          <Fact label="Confidenzialita" text="Solo Bob dovrebbe poter leggere il messaggio di Alice." />
+          <Fact label="Integrita"       text="Il messaggio non dovrebbe cambiare durante il tragitto." />
+          <Fact label="Autenticazione"  text="Bob dovrebbe sapere che arriva davvero da Alice." />
         </div>
       </Card>
     </SectionShell>

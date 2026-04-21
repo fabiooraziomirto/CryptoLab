@@ -13,50 +13,50 @@ const RSASection = () => {
 
   return (
     <SectionShell
-      eyebrow="05 · Asymmetric encryption"
-      title="Two keys, and one of them is public"
-      intro="Asymmetric encryption (RSA, ECC) uses a key pair. Anyone can lock a message using Bob’s public key — but only Bob, holding the matching private key, can unlock it."
+      eyebrow="05 · Crittografia asimmetrica"
+      title="Due chiavi, e una di queste e pubblica"
+      intro="La crittografia asimmetrica (RSA, ECC) usa una coppia di chiavi. Chiunque puo bloccare un messaggio usando la chiave pubblica di Bob, ma solo Bob, con la chiave privata corrispondente, puo sbloccarlo."
       summary={[
-        "Each person has a public key (shareable) and a private key (secret).",
-        "Messages locked with the public key can only be opened with the private key.",
-        "This solves the ‘how do we share a secret key?’ problem of symmetric crypto.",
+        "Ogni persona ha una chiave pubblica (condivisibile) e una chiave privata (segreta).",
+        "I messaggi bloccati con la chiave pubblica si aprono solo con la chiave privata.",
+        "Questo risolve il problema del 'come condividiamo un segreto?' tipico della crittografia simmetrica.",
       ]}
     >
       <Card className="p-7">
         <div className="flex items-center justify-between mb-5 flex-wrap gap-3">
           <div className="flex items-center gap-2 flex-wrap">
-            <Pill tone="blue">Bob’s public key</Pill>
+            <Pill tone="blue">Chiave pubblica di Bob</Pill>
             <span className="font-mono text-[13px]">(e = {keys.e}, n = {keys.n})</span>
-            <Pill tone="coral">Bob’s private key</Pill>
+            <Pill tone="coral">Chiave privata di Bob</Pill>
             <span className="font-mono text-[13px]">(d = {keys.d}, n = {keys.n})</span>
           </div>
-          <Button variant="secondary" size="sm" onClick={() => setKeys(genToyRSA())}>↻ New key pair</Button>
+          <Button variant="secondary" size="sm" onClick={() => setKeys(genToyRSA())}>↻ Nuova coppia di chiavi</Button>
         </div>
 
         {/* Flow */}
         <div className="grid md:grid-cols-[1fr_auto_1fr_auto_1fr] gap-3 items-stretch">
-          <Pane label="Alice’s message" tone="blue">
+          <Pane label="Messaggio di Alice" tone="blue">
             <input
               value={msg}
               onChange={(e) => setMsg(e.target.value.toUpperCase().slice(0, 14))}
               className="w-full p-2 rounded-md border border-blue-200 bg-white font-mono text-[14px] focus:outline-none focus:border-blue-500"
             />
-            <div className="mt-2 text-[11px] text-blue-700">Encrypts with Bob’s public key</div>
+            <div className="mt-2 text-[11px] text-blue-700">Cifra con la chiave pubblica di Bob</div>
           </Pane>
           <div className="flex items-center justify-center">
-            <Arrow label="🔒 encrypt" />
+            <Arrow label="🔒 cifra" />
           </div>
-          <Pane label="On the wire (Trudy sees numbers)" tone="ink">
+          <Pane label="Sul canale (Trudy vede numeri)" tone="ink">
             <div className="font-mono text-[12px] text-amber-200 break-words">
               {encrypted.join(' · ')}
             </div>
           </Pane>
           <div className="flex items-center justify-center">
-            <Arrow label="🔑 decrypt" />
+            <Arrow label="🔑 decifra" />
           </div>
-          <Pane label="Bob reads" tone="green">
+          <Pane label="Bob legge" tone="green">
             <div className="font-mono text-[14px] text-emerald-900 p-1">{decrypted}</div>
-            <div className="mt-2 text-[11px] text-emerald-700">Decrypts with Bob’s private key</div>
+            <div className="mt-2 text-[11px] text-emerald-700">Decifra con la chiave privata di Bob</div>
           </Pane>
         </div>
 
@@ -65,26 +65,26 @@ const RSASection = () => {
           <div className="rounded-xl border border-blue-200 bg-blue-50 p-4">
             <div className="flex items-center gap-2 mb-2">
               <span className="w-6 h-6 rounded-md bg-blue-600 text-white grid place-items-center text-[11px] font-bold">🔓</span>
-              <div className="text-[13px] font-semibold text-blue-900">Public key — share freely</div>
+              <div className="text-[13px] font-semibold text-blue-900">Chiave pubblica — condividila liberamente</div>
             </div>
             <p className="text-[12.5px] text-blue-900/80 leading-relaxed">
-              Bob publishes this on his website, in his email signature, anywhere. It’s used to lock messages to him.
+              Bob la pubblica sul suo sito, nella firma email, ovunque. Serve per cifrare messaggi destinati a lui.
             </p>
           </div>
           <div className="rounded-xl border border-rose-200 bg-rose-50 p-4">
             <div className="flex items-center gap-2 mb-2">
               <span className="w-6 h-6 rounded-md bg-rose-600 text-white grid place-items-center text-[11px] font-bold">🔑</span>
-              <div className="text-[13px] font-semibold text-rose-900">Private key — never shared</div>
+              <div className="text-[13px] font-semibold text-rose-900">Chiave privata — mai condivisa</div>
             </div>
             <p className="text-[12.5px] text-rose-900/80 leading-relaxed">
-              Only Bob has this. It’s the only key that can open messages locked with his public key.
+              Solo Bob la possiede. E l'unica chiave che puo aprire i messaggi cifrati con la sua chiave pubblica.
             </p>
           </div>
         </div>
 
         <div className="mt-5 p-4 rounded-xl bg-stone-50 border border-stone-200 text-[12.5px] text-stone-700">
-          <span className="font-semibold">Behind the scenes:</span> real RSA uses primes hundreds of digits long.
-          Here we’re using tiny primes ({keys.p} × {keys.q} = {keys.n}) so you can see the numbers move.
+          <span className="font-semibold">Dietro le quinte:</span> il vero RSA usa numeri primi lunghi centinaia di cifre.
+          Qui stiamo usando primi minuscoli ({keys.p} × {keys.q} = {keys.n}) per farti vedere come si muovono i numeri.
         </div>
       </Card>
     </SectionShell>

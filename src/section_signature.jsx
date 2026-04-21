@@ -1,7 +1,7 @@
 // Section 6 — Digital Signature
 const SignatureSection = () => {
-  const [original, setOriginal] = useState("Prescribe 500mg of amoxicillin, 3x/day.");
-  const [tampered, setTampered] = useState("Prescribe 500mg of amoxicillin, 3x/day.");
+  const [original, setOriginal] = useState("Prescrivi 500 mg di amoxicillina, 3 volte al giorno.");
+  const [tampered, setTampered] = useState("Prescrivi 500 mg di amoxicillina, 3 volte al giorno.");
   const [signed, setSigned] = useState(false);
 
   const originalHash = useMemo(() => tinyHash(original), [original]);
@@ -12,21 +12,21 @@ const SignatureSection = () => {
 
   return (
     <SectionShell
-      eyebrow="06 · Digital signatures"
-      title="Proving a message wasn’t changed — and really came from you"
-      intro="A digital signature combines hashing with asymmetric crypto. Alice hashes her message, ‘signs’ the hash with her private key, and anyone with her public key can verify that it’s untouched and truly hers."
+      eyebrow="06 · Firme digitali"
+      title="Dimostrare che un messaggio non e stato alterato e che arriva davvero da te"
+      intro="Una firma digitale combina hashing e crittografia asimmetrica. Alice calcola l'hash del messaggio, 'firma' quell'hash con la sua chiave privata e chiunque abbia la sua chiave pubblica puo verificare che il contenuto sia integro e autentico."
       summary={[
-        "A hash is a short fingerprint of a message — any tiny change produces a completely different hash.",
-        "Alice signs the hash with her private key; Bob verifies using her public key.",
-        "If the message was altered in transit, verification fails and Bob knows not to trust it.",
+        "Un hash e una breve impronta del messaggio: anche una modifica minuscola produce un hash completamente diverso.",
+        "Alice firma l'hash con la sua chiave privata; Bob verifica usando la chiave pubblica.",
+        "Se il messaggio viene alterato durante il tragitto, la verifica fallisce e Bob sa di non potersi fidare.",
       ]}
     >
       <Card className="p-7">
         {/* Step 1: Alice signs */}
         <div className="mb-6">
-          <StepHeader n="1" title="Alice writes and signs" />
+          <StepHeader n="1" title="Alice scrive e firma" />
           <div className="grid md:grid-cols-[1fr_auto_1fr_auto_1fr] gap-3 items-stretch mt-3">
-            <Pane label="Original message" tone="blue">
+            <Pane label="Messaggio originale" tone="blue">
               <textarea
                 value={original}
                 onChange={(e) => { setOriginal(e.target.value); setTampered(e.target.value); setSigned(false); }}
@@ -34,16 +34,16 @@ const SignatureSection = () => {
               />
             </Pane>
             <div className="flex items-center justify-center"><Arrow label="hash" /></div>
-            <Pane label="Hash (fingerprint)" tone="ink">
+            <Pane label="Hash (impronta)" tone="ink">
               <div className="font-mono text-[12px] text-amber-200 p-1 break-all">{originalHash}</div>
             </Pane>
-            <div className="flex items-center justify-center"><Arrow label="sign w/ private key" /></div>
-            <Pane label="Signature" tone={signed ? 'green' : 'coral'}>
+            <div className="flex items-center justify-center"><Arrow label="firma con chiave privata" /></div>
+            <Pane label="Firma" tone={signed ? 'green' : 'coral'}>
               <div className="font-mono text-[11.5px] p-1 break-all min-h-[40px]">
-                {signed ? signature : <span className="text-stone-400">not signed yet</span>}
+                {signed ? signature : <span className="text-stone-400">non ancora firmato</span>}
               </div>
               <Button size="sm" variant={signed ? 'secondary' : 'primary'} className="mt-2 w-full" onClick={() => setSigned(true)}>
-                {signed ? '✓ signed' : 'Sign message'}
+                {signed ? '✓ firmato' : 'Firma messaggio'}
               </Button>
             </Pane>
           </div>
@@ -51,18 +51,18 @@ const SignatureSection = () => {
 
         {/* Step 2: Transit / tamper */}
         <div className="mb-6">
-          <StepHeader n="2" title="In transit — Trudy may tamper" />
+          <StepHeader n="2" title="Durante il tragitto — Trudy puo manomettere" />
           <div className="mt-3 rounded-xl border border-stone-200 p-4 bg-stone-50">
-            <label className="text-[11px] uppercase tracking-wider text-rose-600 mb-1.5 block">Trudy edits the message</label>
+            <label className="text-[11px] uppercase tracking-wider text-rose-600 mb-1.5 block">Trudy modifica il messaggio</label>
             <textarea
               value={tampered}
               onChange={(e) => setTampered(e.target.value)}
               className="w-full h-[70px] p-2 rounded-md border border-rose-200 bg-white text-[13px] resize-none focus:outline-none focus:border-rose-500"
-              placeholder="Try changing 500mg to 5000mg…"
+              placeholder="Prova a cambiare 500 mg in 5000 mg…"
             />
             {tampered !== original && (
               <div className="mt-2 text-[12px] text-rose-700">
-                ⚠ Modified — this changes the hash completely.
+                ⚠ Modificato: l'hash cambia completamente.
               </div>
             )}
           </div>
@@ -70,12 +70,12 @@ const SignatureSection = () => {
 
         {/* Step 3: Bob verifies */}
         <div>
-          <StepHeader n="3" title="Bob verifies" />
+          <StepHeader n="3" title="Bob verifica" />
           <div className="grid md:grid-cols-3 gap-3 mt-3">
-            <Pane label="Hash Bob computes now" tone="neutral">
+            <Pane label="Hash che Bob calcola ora" tone="neutral">
               <div className="font-mono text-[12px] p-1 break-all">{tamperedHash}</div>
             </Pane>
-            <Pane label="Hash recovered from signature" tone="neutral">
+            <Pane label="Hash recuperato dalla firma" tone="neutral">
               <div className="font-mono text-[12px] p-1 break-all">{signed ? originalHash : '—'}</div>
             </Pane>
             <div
@@ -91,10 +91,10 @@ const SignatureSection = () => {
                 {!signed ? '•' : valid ? '✓' : '✗'}
               </div>
               <div className="text-[13px] font-semibold text-center">
-                {!signed ? 'Sign first to verify' : valid ? 'Signature valid — trust it' : 'Signature INVALID — reject!'}
+                {!signed ? 'Firma prima per verificare' : valid ? 'Firma valida — puoi fidarti' : 'Firma NON valida — rifiuta!'}
               </div>
               {signed && !valid && (
-                <div className="text-[11px] mt-1 text-rose-700 text-center">Hashes don’t match → message changed</div>
+                <div className="text-[11px] mt-1 text-rose-700 text-center">Gli hash non coincidono → messaggio alterato</div>
               )}
             </div>
           </div>

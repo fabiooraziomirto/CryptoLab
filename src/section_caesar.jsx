@@ -28,19 +28,19 @@ const CaesarSection = () => {
 
   return (
     <SectionShell
-      eyebrow="02 · Classical ciphers"
-      title="Caesar cipher — shift each letter"
-      intro="The oldest encryption trick in the book: shift every letter by k positions. Easy to understand, and dangerously easy to break. Try the brute-force attack."
+      eyebrow="02 · Cifrari classici"
+      title="Cifrario di Cesare — sposta ogni lettera"
+      intro="Il trucco di cifratura piu antico: spostare ogni lettera di k posizioni. Facile da capire, ma anche pericolosamente facile da rompere. Prova l'attacco brute force."
       summary={[
-        "Caesar cipher has only 25 possible keys.",
-        "An attacker can simply try them all — this is called brute force.",
-        "Modern ciphers use astronomically large key spaces so brute force is hopeless.",
+        "Il cifrario di Cesare ha solo 25 chiavi possibili.",
+        "Un attaccante puo provarle tutte: questo si chiama brute force.",
+        "I cifrari moderni usano spazi di chiavi enormi, quindi il brute force diventa impraticabile.",
       ]}
     >
       <Card className="p-7">
         <div className="grid md:grid-cols-[1fr_auto] gap-6 items-start">
           <div>
-            <label className="text-[11px] uppercase tracking-wider text-stone-500 mb-1.5 block">Your message</label>
+            <label className="text-[11px] uppercase tracking-wider text-stone-500 mb-1.5 block">Il tuo messaggio</label>
             <input
               value={text}
               onChange={(e) => setText(e.target.value.toUpperCase())}
@@ -48,7 +48,7 @@ const CaesarSection = () => {
             />
             <div className="mt-5">
               <div className="flex items-center justify-between mb-2">
-                <label className="text-[11px] uppercase tracking-wider text-stone-500">Shift (key k)</label>
+                <label className="text-[11px] uppercase tracking-wider text-stone-500">Spostamento (chiave k)</label>
                 <span className="font-mono text-[13px] text-stone-900">k = {k}</span>
               </div>
               <input
@@ -59,7 +59,7 @@ const CaesarSection = () => {
             </div>
           </div>
           <div className="rounded-xl bg-stone-900 text-amber-200 font-mono p-5 min-w-[220px]">
-            <div className="text-[10px] uppercase tracking-wider text-stone-500 mb-2">Encrypted</div>
+            <div className="text-[10px] uppercase tracking-wider text-stone-500 mb-2">Cifrato</div>
             <div className="text-[18px] break-all">{cipher || '—'}</div>
           </div>
         </div>
@@ -67,11 +67,11 @@ const CaesarSection = () => {
         {/* Alphabet wheels */}
         <div className="mt-7 overflow-x-auto">
           <div className="inline-grid gap-1" style={{ gridTemplateColumns: 'auto repeat(26, 28px)' }}>
-            <div className="text-[10px] uppercase tracking-wider text-stone-500 pr-2 self-center">Plain</div>
+            <div className="text-[10px] uppercase tracking-wider text-stone-500 pr-2 self-center">Chiaro</div>
             {alphabet.map((c) => (
               <div key={c} className="w-7 h-7 rounded grid place-items-center border border-stone-200 text-[12px] font-mono text-stone-700">{c}</div>
             ))}
-            <div className="text-[10px] uppercase tracking-wider text-stone-500 pr-2 self-center">Cipher</div>
+            <div className="text-[10px] uppercase tracking-wider text-stone-500 pr-2 self-center">Cifrato</div>
             {alphabet.map((c, i) => (
               <div
                 key={c}
@@ -93,13 +93,13 @@ const CaesarSection = () => {
       <Card className="p-7">
         <div className="flex items-center justify-between gap-4 flex-wrap">
           <div>
-            <div className="text-[15px] font-semibold text-stone-900">Brute-force attack</div>
+            <div className="text-[15px] font-semibold text-stone-900">Attacco brute force</div>
             <div className="text-[13px] text-stone-600 mt-1">
-              Trudy doesn’t know k. But there are only 26 options — she tries them all.
+              Trudy non conosce k. Ma le opzioni sono solo 26, quindi le prova tutte.
             </div>
           </div>
           <Button variant={showBrute ? 'secondary' : 'danger'} onClick={() => setShowBrute(!showBrute)}>
-            {showBrute ? 'Hide attack' : 'Run brute force'}
+            {showBrute ? 'Nascondi attacco' : 'Avvia brute force'}
           </Button>
         </div>
         {showBrute && (
@@ -113,7 +113,7 @@ const CaesarSection = () => {
               >
                 <span className="text-stone-500 w-10">k={tryK}</span>
                 <span className="text-stone-900 truncate">{out}</span>
-                {tryK === k && <span className="ml-auto text-[10px] text-emerald-700 font-semibold">✓ HIT</span>}
+                {tryK === k && <span className="ml-auto text-[10px] text-emerald-700 font-semibold">✓ TROVATA</span>}
               </div>
             ))}
           </div>
@@ -123,22 +123,22 @@ const CaesarSection = () => {
       <Card className="p-7">
         <div className="grid md:grid-cols-2 gap-6">
           <div className="rounded-xl border border-blue-200 bg-blue-50 p-4">
-            <div className="text-[10px] uppercase tracking-wider text-blue-700 mb-2">Kerckhoffs principle</div>
+            <div className="text-[10px] uppercase tracking-wider text-blue-700 mb-2">Principio di Kerckhoffs</div>
             <div className="text-[13px] text-blue-900 leading-relaxed">
-              A cryptosystem must remain secure even if the attacker knows the algorithm.
-              Security should rely only on the secrecy of the key.
+              Un crittosistema deve restare sicuro anche se l'attaccante conosce l'algoritmo.
+              La sicurezza deve dipendere solo dalla segretezza della chiave.
             </div>
             <div className="mt-3 text-[12px] text-blue-900/80">
-              So publishing the algorithm is fine; short or weak keys are the real problem.
+              Pubblicare l'algoritmo quindi va bene; il vero problema sono le chiavi corte o deboli.
             </div>
           </div>
 
           <div className="rounded-xl border border-stone-200 bg-stone-50 p-4">
-            <div className="text-[10px] uppercase tracking-wider text-stone-600 mb-2">How key length explodes search space</div>
+            <div className="text-[10px] uppercase tracking-wider text-stone-600 mb-2">Come la lunghezza della chiave fa esplodere lo spazio di ricerca</div>
 
             <div className="mb-3">
               <div className="flex items-center justify-between mb-1">
-                <label className="text-[11px] text-stone-600">Key length (bits)</label>
+                <label className="text-[11px] text-stone-600">Lunghezza chiave (bit)</label>
                 <span className="font-mono text-[12px]">{bits}</span>
               </div>
               <input
@@ -153,22 +153,22 @@ const CaesarSection = () => {
             </div>
 
             <div className="mb-3">
-              <label className="text-[11px] text-stone-600 mb-1 block">Guesses per second</label>
+              <label className="text-[11px] text-stone-600 mb-1 block">Tentativi al secondo</label>
               <select
                 value={triesPerSec}
                 onChange={(e) => setTriesPerSec(Number(e.target.value))}
                 className="w-full p-2 rounded-md border border-stone-300 text-[12px] bg-white"
               >
-                <option value={1e6}>1e6 guesses/s</option>
-                <option value={1e9}>1e9 guesses/s</option>
-                <option value={1e12}>1e12 guesses/s</option>
+                <option value={1e6}>1e6 tentativi/s</option>
+                <option value={1e9}>1e9 tentativi/s</option>
+                <option value={1e12}>1e12 tentativi/s</option>
               </select>
             </div>
 
             <div className="text-[12px] text-stone-700 space-y-1 font-mono">
-              <div>keys: 2^{bits} ~ {fmt(keyCount)}</div>
-              <div>time: {fmt(seconds)} seconds</div>
-              <div>time: {fmt(years)} years</div>
+              <div>chiavi: 2^{bits} ~ {fmt(keyCount)}</div>
+              <div>tempo: {fmt(seconds)} secondi</div>
+              <div>tempo: {fmt(years)} anni</div>
             </div>
           </div>
         </div>

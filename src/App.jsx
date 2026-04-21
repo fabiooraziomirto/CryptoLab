@@ -7,7 +7,9 @@ import './section_attacks.jsx';
 import './section_caesar.jsx';
 import './section_alberti.jsx';
 import './section_vigenere.jsx';
+import './section_enigma.jsx';
 import './section_aes.jsx';
+import './section_des.jsx';
 import './section_rsa.jsx';
 import './section_hybrid.jsx';
 import './section_signature.jsx';
@@ -20,24 +22,26 @@ import './section_pgp.jsx';
 import React, { useState, useEffect } from 'react';
 
 const SECTIONS = [
-  { id: 'intro',     label: 'Alice, Bob & Trudy',    group: 'Foundations',  comp: 'IntroSection' },
-  { id: 'attacks',   label: 'Attack types',          group: 'Foundations',  comp: 'AttacksSection' },
-  { id: 'caesar',    label: 'Caesar cipher',         group: 'Classical',    comp: 'CaesarSection' },
-  { id: 'alberti',   label: 'Alberti disk',          group: 'Classical',    comp: 'AlbertiSection' },
-  { id: 'vigenere',  label: 'Vigenere cipher',       group: 'Classical',    comp: 'VigenereSection' },
-  { id: 'aes',       label: 'Symmetric (AES)',       group: 'Modern',       comp: 'AESSection' },
-  { id: 'rsa',       label: 'Asymmetric (RSA)',      group: 'Modern',       comp: 'RSASection' },
-  { id: 'hybrid',    label: 'Hybrid cryptography',   group: 'Modern',       comp: 'HybridSection' },
-  { id: 'signature', label: 'Digital signature',     group: 'Modern',       comp: 'SignatureSection' },
-  { id: 'https',     label: 'HTTPS in the wild',     group: 'Real world',   comp: 'HTTPSSection' },
-  { id: 'pgp',       label: 'PGP secure email',      group: 'Real world',   comp: 'PGPSection' },
+  { id: 'intro',     label: 'Alice, Bob e Trudy',        group: 'Fondamenti', comp: 'IntroSection' },
+  { id: 'attacks',   label: 'Tipi di attacco',           group: 'Fondamenti', comp: 'AttacksSection' },
+  { id: 'caesar',    label: 'Cifrario di Cesare',        group: 'Classici',   comp: 'CaesarSection' },
+  { id: 'alberti',   label: 'Disco di Alberti',          group: 'Classici',   comp: 'AlbertiSection' },
+  { id: 'vigenere',  label: 'Cifrario di Vigenere',      group: 'Classici',   comp: 'VigenereSection' },
+  { id: 'enigma',    label: 'Macchina Enigma',           group: 'Classici',   comp: 'EnigmaSection' },
+  { id: 'aes',       label: 'Crittografia simmetrica',   group: 'Moderni',    comp: 'AESSection' },
+  { id: 'legacy',    label: 'DES e 3DES',                group: 'Moderni',    comp: 'LegacyBlockSection' },
+  { id: 'rsa',       label: 'Crittografia asimmetrica',  group: 'Moderni',    comp: 'RSASection' },
+  { id: 'hybrid',    label: 'Crittografia ibrida',       group: 'Moderni',    comp: 'HybridSection' },
+  { id: 'signature', label: 'Firma digitale',            group: 'Moderni',    comp: 'SignatureSection' },
+  { id: 'https',     label: 'HTTPS nel mondo reale',     group: 'Mondo reale', comp: 'HTTPSSection' },
+  { id: 'pgp',       label: 'Email sicura con PGP',      group: 'Mondo reale', comp: 'PGPSection' },
 ];
 
 const GROUP_COLORS = {
-  Foundations: 'bg-blue-50 text-blue-700 border-blue-200',
-  Classical: 'bg-amber-50 text-amber-800 border-amber-200',
-  Modern: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-  'Real world': 'bg-stone-100 text-stone-700 border-stone-200',
+  Fondamenti: 'bg-blue-50 text-blue-700 border-blue-200',
+  Classici: 'bg-amber-50 text-amber-800 border-amber-200',
+  Moderni: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+  'Mondo reale': 'bg-stone-100 text-stone-700 border-stone-200',
 };
 
 function Dashboard({ onOpenSection, viewed }) {
@@ -54,9 +58,9 @@ function Dashboard({ onOpenSection, viewed }) {
   return (
     <div className="max-w-[1150px] mx-auto px-8 py-10">
       <div className="rounded-3xl border border-stone-200 bg-gradient-to-br from-stone-900 via-stone-800 to-stone-700 text-stone-100 p-7 md:p-8">
-        <div className="text-[11px] uppercase tracking-[0.14em] text-stone-300 mb-2">CryptoLab Dashboard</div>
+        <div className="text-[11px] uppercase tracking-[0.14em] text-stone-300 mb-2">Panoramica CryptoLab</div>
         <h1 className="text-[30px] md:text-[36px] leading-tight font-semibold tracking-tight mb-3">
-          Interactive Security Journey
+          Percorso interattivo nella sicurezza
         </h1>
         <p className="text-[14px] text-stone-200 max-w-[760px] leading-relaxed">
           Inizia da Foundations e avanza fino ai casi reali. Ogni sezione e interattiva e costruita
@@ -65,15 +69,15 @@ function Dashboard({ onOpenSection, viewed }) {
 
         <div className="mt-6 grid sm:grid-cols-3 gap-3">
           <div className="rounded-xl bg-white/10 border border-white/20 p-4">
-            <div className="text-[11px] uppercase tracking-wider text-stone-300 mb-1">Sections</div>
+            <div className="text-[11px] uppercase tracking-wider text-stone-300 mb-1">Sezioni</div>
             <div className="text-[24px] font-semibold">{total}</div>
           </div>
           <div className="rounded-xl bg-white/10 border border-white/20 p-4">
-            <div className="text-[11px] uppercase tracking-wider text-stone-300 mb-1">Completed</div>
+            <div className="text-[11px] uppercase tracking-wider text-stone-300 mb-1">Completate</div>
             <div className="text-[24px] font-semibold">{done}</div>
           </div>
           <div className="rounded-xl bg-white/10 border border-white/20 p-4">
-            <div className="text-[11px] uppercase tracking-wider text-stone-300 mb-1">Progress</div>
+            <div className="text-[11px] uppercase tracking-wider text-stone-300 mb-1">Progresso</div>
             <div className="text-[24px] font-semibold">{pct}%</div>
           </div>
         </div>
@@ -92,7 +96,7 @@ function Dashboard({ onOpenSection, viewed }) {
               <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[11px] border font-medium ${GROUP_COLORS[group]}`}>
                 {group}
               </span>
-              <span className="text-[12px] text-stone-500">{items.length} topics</span>
+              <span className="text-[12px] text-stone-500">{items.length} argomenti</span>
             </div>
 
             <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-3">
@@ -111,7 +115,7 @@ function Dashboard({ onOpenSection, viewed }) {
                             : 'bg-stone-100 text-stone-600 border-stone-200'
                         }`}
                       >
-                        {doneItem ? 'completed' : 'not started'}
+                        {doneItem ? 'completata' : 'non iniziata'}
                       </span>
                     </div>
 
@@ -174,10 +178,10 @@ export default function App() {
             onClick={() => setActive('dashboard')}
             className="text-[12px] px-3 py-1.5 rounded-lg border border-stone-300 bg-white text-stone-700 hover:bg-stone-50"
           >
-            Dashboard
+            Panoramica
           </button>
           <div className="text-[11px] uppercase tracking-wider text-stone-500 truncate">{selected.group} - {selected.label}</div>
-          <div className="text-[12px] text-stone-600">{viewed.length}/{SECTIONS.length} complete</div>
+          <div className="text-[12px] text-stone-600">{viewed.length}/{SECTIONS.length} completate</div>
         </div>
       </div>
       <Active />
