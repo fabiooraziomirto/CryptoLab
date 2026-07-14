@@ -1,8 +1,8 @@
-// Primitive condivise e helper per CryptoLab
+// Shared primitives + helpers for CryptoLab
 import React from 'react';
 const { useState, useEffect, useRef, useMemo, useCallback } = React;
 
-// ---------- Helper crittografici (solo dimostrativi, non adatti alla produzione) ----------
+// ---------- Crypto helpers (conceptual, not production) ----------
 const caesarShift = (text, k) => {
   const shift = ((k % 26) + 26) % 26;
   return text.replace(/[a-zA-Z]/g, (c) => {
@@ -25,23 +25,21 @@ const vigenere = (text, key, encrypt = true) => {
   });
 };
 
-// ⚠️  SOLO DIMOSTRATIVO — NON È AES REALE
-// Cifra XOR con un flusso pseudo-casuale derivato dalla chiave, poi codifica in Base64.
-// Usato esclusivamente per l'effetto visivo nelle sezioni didattiche storiche.
-// Per crittografia reale usa encryptAesGcm() qui sotto, che sfrutta la Web Crypto API.
+// Fake-but-convincing AES: xor with a pseudo-random stream derived from key,
+// then base64. Purely for visual effect.
 const seedRand = (seed) => {
   let s = 0;
   for (const c of seed) s = (s * 131 + c.charCodeAt(0)) >>> 0;
   return () => { s = (s * 1664525 + 1013904223) >>> 0; return s & 0xff; };
 };
-const xorCipher = (text, key) => {
+const fakeAES = (text, key) => {
   const rnd = seedRand(key);
   const bytes = new TextEncoder().encode(text);
   const out = new Uint8Array(bytes.length);
   for (let i = 0; i < bytes.length; i++) out[i] = bytes[i] ^ rnd();
   return btoa(String.fromCharCode(...out));
 };
-const xorCipherDecrypt = (b64, key) => {
+const fakeAESDecrypt = (b64, key) => {
   try {
     const rnd = seedRand(key);
     const bytes = Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
@@ -50,69 +48,7 @@ const xorCipherDecrypt = (b64, key) => {
     return new TextDecoder().decode(out);
   } catch { return ''; }
 };
-// Alias deprecati mantenuti per retrocompatibilità con eventuali sezioni che li usino ancora
-const fakeAES = xorCipher;
-const fakeAESDecrypt = xorCipherDecrypt;
 
-const bytesToBase64 = (bytes) => {
-  let binary = '';
-  const chunkSize = 0x8000;
-  for (let i = 0; i < bytes.length; i += chunkSize) {
-    binary += String.fromCharCode(...bytes.subarray(i, i + chunkSize));
-  }
-  return btoa(binary);
-};
-
-const base64ToBytes = (value) => Uint8Array.from(atob(value), (c) => c.charCodeAt(0));
-
-const bytesToHex = (bytes) => Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('').toUpperCase();
-
-const supportsWebCrypto = () => Boolean(globalThis.crypto?.subtle);
-
-const deriveAesKey = async (secret) => {
-  if (!supportsWebCrypto()) throw new Error('Web Crypto API non disponibile');
-  const material = new TextEncoder().encode(secret);
-  const digest = await globalThis.crypto.subtle.digest('SHA-256', material);
-  return globalThis.crypto.subtle.importKey(
-    'raw',
-    digest,
-    { name: 'AES-GCM' },
-    false,
-    ['encrypt', 'decrypt']
-  );
-};
-
-const encryptAesGcm = async (text, secret) => {
-  if (!secret) throw new Error('Chiave segreta mancante');
-  const iv = globalThis.crypto.getRandomValues(new Uint8Array(12));
-  const key = await deriveAesKey(secret);
-  const plainBytes = new TextEncoder().encode(text);
-  const cipherBuffer = await globalThis.crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, plainBytes);
-  const cipherBytes = new Uint8Array(cipherBuffer);
-  const ivBase64 = bytesToBase64(iv);
-  const cipherBase64 = bytesToBase64(cipherBytes);
-
-  return {
-    ivBase64,
-    ivHex: bytesToHex(iv),
-    cipherBase64,
-    cipherHex: bytesToHex(cipherBytes),
-    payload: `${ivBase64}:${cipherBase64}`,
-  };
-};
-
-const decryptAesGcm = async (payload, secret) => {
-  if (!secret) throw new Error('Chiave segreta mancante');
-  const [ivBase64, cipherBase64] = String(payload || '').split(':');
-  if (!ivBase64 || !cipherBase64) throw new Error('Pacchetto non valido');
-  const iv = base64ToBytes(ivBase64);
-  const cipherBytes = base64ToBytes(cipherBase64);
-  const key = await deriveAesKey(secret);
-  const plainBuffer = await globalThis.crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, cipherBytes);
-  return new TextDecoder().decode(plainBuffer);
-};
-
-// Genera una chiave casuale a scopo dimostrativo (NON usare per produzione)
 const randomKey = (len = 16) => {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   let s = '';
@@ -120,7 +56,7 @@ const randomKey = (len = 16) => {
   return s;
 };
 
-// Hash minimale (16 caratteri hex) — solo per demo di integrità visiva, NON crittograficamente sicuro
+// Tiny hash → 8 hex chars, for visual integrity demos
 const tinyHash = (s) => {
   let h1 = 0xdeadbeef, h2 = 0x41c6ce57;
   for (let i = 0; i < s.length; i++) {
@@ -134,9 +70,116 @@ const tinyHash = (s) => {
   return out.slice(0, 16);
 };
 
-// RSA semplificato — matematica modulare reale, ma numeri primissimi di 2-3 cifre.
-// ⚠️  SOLO DIMOSTRATIVO: questi numeri possono essere fattorizzati in millisecondi.
-// Il vero RSA usa numeri primi di 2048+ bit.
+// Educational DES: Feistel network with 16 rounds, simplified (no real S-boxes).
+// Operates on 8-byte blocks, 7-byte key (56 bits like real DES).
+const desSubkeys = (key) => {
+  // Derive 16 subkeys from key using LCG
+  let s = 0;
+  for (const c of key) s = (s * 131 + c.charCodeAt(0)) >>> 0;
+  const subkeys = [];
+  for (let i = 0; i < 16; i++) {
+    s = (s * 1664525 + 1013904223) >>> 0;
+    subkeys.push(s >>> 0);
+  }
+  return subkeys;
+};
+
+// Feistel F-function: mixes 4-byte half with 4-byte subkey
+const feistelF = (half, subkey) => {
+  const sk = subkey >>> 0;
+  // rotate + XOR + mix to simulate diffusion
+  const a = ((half ^ sk) >>> 0);
+  const b = ((a << 3) | (a >>> 29)) >>> 0;
+  return (b ^ (sk * 0x9e3779b9)) >>> 0;
+};
+
+const desEncryptBlock = (block8, subkeys) => {
+  // block8: Uint8Array of 8 bytes → split into two 32-bit halves
+  let L = (block8[0] << 24 | block8[1] << 16 | block8[2] << 8 | block8[3]) >>> 0;
+  let R = (block8[4] << 24 | block8[5] << 16 | block8[6] << 8 | block8[7]) >>> 0;
+  for (let i = 0; i < 16; i++) {
+    const newR = (L ^ feistelF(R, subkeys[i])) >>> 0;
+    L = R;
+    R = newR;
+  }
+  const out = new Uint8Array(8);
+  out[0] = (L >>> 24) & 0xff; out[1] = (L >>> 16) & 0xff;
+  out[2] = (L >>> 8) & 0xff;  out[3] = L & 0xff;
+  out[4] = (R >>> 24) & 0xff; out[5] = (R >>> 16) & 0xff;
+  out[6] = (R >>> 8) & 0xff;  out[7] = R & 0xff;
+  return out;
+};
+
+const desDecryptBlock = (block8, subkeys) => {
+  return desEncryptBlock(block8, [...subkeys].reverse());
+};
+
+const pkcs5pad = (bytes) => {
+  const pad = 8 - (bytes.length % 8);
+  const out = new Uint8Array(bytes.length + pad);
+  out.set(bytes);
+  out.fill(pad, bytes.length);
+  return out;
+};
+
+const pkcs5unpad = (bytes) => {
+  const pad = bytes[bytes.length - 1];
+  if (pad < 1 || pad > 8) return bytes;
+  return bytes.slice(0, bytes.length - pad);
+};
+
+const fakeDES = (text, key) => {
+  const subkeys = desSubkeys(key);
+  const bytes = pkcs5pad(new TextEncoder().encode(text));
+  const out = new Uint8Array(bytes.length);
+  for (let i = 0; i < bytes.length; i += 8)
+    out.set(desEncryptBlock(bytes.slice(i, i + 8), subkeys), i);
+  return btoa(String.fromCharCode(...out));
+};
+
+const fakeDESDecrypt = (b64, key) => {
+  try {
+    const subkeys = desSubkeys(key);
+    const bytes = Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
+    const out = new Uint8Array(bytes.length);
+    for (let i = 0; i < bytes.length; i += 8)
+      out.set(desDecryptBlock(bytes.slice(i, i + 8), subkeys), i);
+    return new TextDecoder().decode(pkcs5unpad(out));
+  } catch { return ''; }
+};
+
+const fake3DES = (text, k1, k2, k3) => {
+  // EDE: Encrypt with K1, Decrypt with K2, Encrypt with K3
+  const sk1 = desSubkeys(k1), sk2 = desSubkeys(k2), sk3 = desSubkeys(k3);
+  const bytes = pkcs5pad(new TextEncoder().encode(text));
+  const out = new Uint8Array(bytes.length);
+  for (let i = 0; i < bytes.length; i += 8) {
+    const b = bytes.slice(i, i + 8);
+    const e1 = desEncryptBlock(b, sk1);
+    const d2 = desDecryptBlock(e1, sk2);
+    const e3 = desEncryptBlock(d2, sk3);
+    out.set(e3, i);
+  }
+  return btoa(String.fromCharCode(...out));
+};
+
+const fake3DESDecrypt = (b64, k1, k2, k3) => {
+  try {
+    const sk1 = desSubkeys(k1), sk2 = desSubkeys(k2), sk3 = desSubkeys(k3);
+    const bytes = Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
+    const out = new Uint8Array(bytes.length);
+    for (let i = 0; i < bytes.length; i += 8) {
+      const b = bytes.slice(i, i + 8);
+      const d3 = desDecryptBlock(b, sk3);
+      const e2 = desEncryptBlock(d3, sk2);
+      const d1 = desDecryptBlock(e2, sk1);
+      out.set(d1, i);
+    }
+    return new TextDecoder().decode(pkcs5unpad(out));
+  } catch { return ''; }
+};
+
+// Simplified RSA-like: use two small primes, real modular math, but kept tiny.
 const gcd = (a, b) => (b === 0 ? a : gcd(b, a % b));
 const modpow = (base, exp, mod) => {
   let r = 1n; base = BigInt(base) % BigInt(mod); exp = BigInt(exp);
@@ -171,7 +214,7 @@ const genToyRSA = () => {
   return { p, q, n, e, d };
 };
 
-// ---------- Primitive UI ----------
+// ---------- UI primitives ----------
 const Card = ({ children, className = '', ...rest }) => (
   <div className={`bg-white border border-stone-200 rounded-2xl ${className}`} {...rest}>
     {children}
@@ -224,7 +267,7 @@ const SectionShell = ({ eyebrow, title, intro, children, summary }) => (
     <div className="space-y-6">{children}</div>
     {summary && (
       <div className="mt-10 rounded-2xl border border-stone-200 bg-stone-900 text-stone-100 p-6">
-        <div className="text-[11px] uppercase tracking-[0.14em] text-stone-400 mb-3">Cosa hai imparato</div>
+        <div className="text-[11px] uppercase tracking-[0.14em] text-stone-400 mb-3">What you learned</div>
         <ul className="space-y-2">
           {summary.map((s, i) => (
             <li key={i} className="flex gap-3 text-[14px] leading-relaxed">
@@ -238,7 +281,7 @@ const SectionShell = ({ eyebrow, title, intro, children, summary }) => (
   </div>
 );
 
-// Avatars geometrici per Alice, Bob e Trudy
+// Little character avatars — geometric, not cartoon SVG
 const Avatar = ({ who }) => {
   const config = {
     alice: { bg: '#DCE9FF', ring: '#2563eb', label: 'A', name: 'Alice' },
@@ -258,7 +301,7 @@ const Avatar = ({ who }) => {
   );
 };
 
-// Blocco monospaziato condiviso per output
+// Shared monospace output chip
 const MonoBlock = ({ children, tone = 'neutral', className = '' }) => {
   const tones = {
     neutral: 'bg-stone-50 border-stone-200 text-stone-900',
@@ -274,49 +317,13 @@ const MonoBlock = ({ children, tone = 'neutral', className = '' }) => {
   );
 };
 
-const Pane = ({ label, tone, children }) => {
-  const tones = {
-    blue:  'bg-blue-50 border-blue-200',
-    ink:   'bg-stone-900 border-stone-900',
-    green: 'bg-emerald-50 border-emerald-200',
-    coral: 'bg-rose-50 border-rose-200',
-    amber: 'bg-amber-50 border-amber-200',
-  };
-  const labelTones = {
-    blue: 'text-blue-700',
-    ink: 'text-stone-400',
-    green: 'text-emerald-700',
-    coral: 'text-rose-700',
-    amber: 'text-amber-800',
-  };
-  return (
-    <div className={`rounded-xl border ${tones[tone]} p-3`}>
-      <div className={`text-[10px] uppercase tracking-wider mb-2 ${labelTones[tone]}`}>{label}</div>
-      {children}
-    </div>
-  );
-};
-
-const Arrow = ({ label }) => (
-  <div className="flex flex-col items-center">
-    <div className="text-[10px] uppercase tracking-wider text-stone-500 mb-1">{label}</div>
-    <div className="w-12 h-[2px] bg-stone-400 relative">
-      <div className="absolute -right-1 -top-[3px] w-0 h-0 border-l-[6px] border-l-stone-400 border-y-[4px] border-y-transparent" />
-    </div>
-  </div>
-);
-
 Object.assign(window, {
-  // React e hook
+  // React
   React, useState, useEffect, useRef, useMemo, useCallback,
-  // Helper crittografici
-  caesarShift, vigenere,
-  xorCipher, xorCipherDecrypt,
-  fakeAES, fakeAESDecrypt, // alias deprecati mantenuti per retrocompatibilità
-  randomKey, tinyHash,
-  bytesToBase64, base64ToBytes, bytesToHex,
-  supportsWebCrypto, encryptAesGcm, decryptAesGcm,
+  // helpers
+  caesarShift, vigenere, fakeAES, fakeAESDecrypt, randomKey, tinyHash,
+  fakeDES, fakeDESDecrypt, fake3DES, fake3DESDecrypt, desSubkeys,
   genToyRSA, modpow,
-  // Componenti UI condivisi
-  Card, Pill, Button, SectionShell, Avatar, MonoBlock, Pane, Arrow,
+  // UI
+  Card, Pill, Button, SectionShell, Avatar, MonoBlock,
 });
